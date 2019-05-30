@@ -38,6 +38,7 @@ namespace SeleniumWrapper4000
                 options.AddArgument("disable-infobars");
                 options.AddArgument("--start-maximized");
             }
+            options.AddArgument("--user-data-dir=C:\\tmp\\chromeprofiles\\profile" + index++);
 
             index++;
             options.AddArgument("--user-data-dir=C:\\tmp\\chromeprofiles\\profile" + index);
