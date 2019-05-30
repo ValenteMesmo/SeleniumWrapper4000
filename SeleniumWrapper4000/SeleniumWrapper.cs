@@ -10,6 +10,7 @@ namespace SeleniumWrapper4000
 {
     public class SeleniumWrapper : IDisposable
     {
+        private static int index = 0;
         private ChromeDriver driver;
         private int currentTimeoutInMilliseconds = 1000;
 
@@ -34,9 +35,13 @@ namespace SeleniumWrapper4000
             }
             else
             {
-                options.AddArguments("disable-infobars");
-                options.AddArguments("--start-maximized");
+                options.AddArgument("disable-infobars");
+                options.AddArgument("--start-maximized");
             }
+
+            index++;
+            options.AddArgument("--user-data-dir=C:\\tmp\\chromeprofiles\\profile" + index);
+            options.AddArguments("--profile-directory=profile" + index);
 
             var webdriver = new ChromeDriver(cService, options);
 
