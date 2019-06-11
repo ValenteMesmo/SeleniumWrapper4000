@@ -8,41 +8,44 @@ using System.IO;
 
 namespace SeleniumWrapper4000
 {
+    //TODO: doc
+    //TODO: wait generic
     public class SeleniumWrapper : IDisposable
     {
-        private static int index = 0;
         private ChromeDriver driver;
-        private int currentTimeoutInMilliseconds = 1000;
+        private int currentTimeoutInMilliseconds;
 
-        public SeleniumWrapper(bool headless = true)
+        public SeleniumWrapper(bool headless = false, int implicityWait = 1000)
         {
-            driver = CreateWebDriver(headless);
-            SetImplicityWait(currentTimeoutInMilliseconds);
-        }
-
-        private ChromeDriver CreateWebDriver(bool headless = true)
-        {
+            currentTimeoutInMilliseconds = implicityWait;
             var cService = ChromeDriverService.CreateDefaultService();
             cService.HideCommandPromptWindow = true;
+            cService.SuppressInitialDiagnosticInformation = true;
+            //cService.EnableVerboseLogging = false;
+            //cService.LogPath = "C:\\tmp\\chrome_profiles\\profile" + index + "\\log";
 
             // Optional
             var options = new ChromeOptions();
 
             if (headless)
             {
-                options.AddArgument("--headless");
-                options.AddArgument("--disable-gpu");
+                options.AddArguments("--headless");
+                options.AddArguments("--disable-gpu");
             }
             else
             {
-                options.AddArgument("disable-infobars");
-                options.AddArgument("--start-maximized");
+                options.AddArguments("disable-infobars");
+                options.AddArguments("--start-maximized");
             }
-            options.AddArgument("--user-data-dir=C:\\tmp\\chromeprofiles\\profile" + index++);
+            //options.AddArguments("enable-auto-reload");
+            options.AddArguments("fast-start");
+            //options.AddArguments("test-type");
+            //unlimited-storage
 
-            index++;
-            options.AddArgument("--user-data-dir=C:\\tmp\\chromeprofiles\\profile" + index);
-            options.AddArguments("--profile-directory=profile" + index);
+            options.AddArguments("--incognito");
+            options.AddArguments("--no-sandbox");
+            //options.AddArguments("--user-data-dir=C:\\tmp\\chrome_profiles\\profile" + index);
+            //options.AddArguments("--profile-directory=profile" + index);
 
             var webdriver = new ChromeDriver(cService, options);
 
@@ -65,7 +68,8 @@ namespace SeleniumWrapper4000
                 Process.GetProcessById(id)
                     .AttachToCurrentProcess();
 
-            return webdriver;
+            driver = webdriver;
+            SetImplicityWait(currentTimeoutInMilliseconds);
         }
 
         public void GoToUrl(string url)
@@ -88,7 +92,18 @@ namespace SeleniumWrapper4000
                     && element.Enabled;
             });
 
-            element.Click();
+            wait.Until(drv =>
+            {
+                try
+                {
+                    element.Click();
+                    return true;
+                }
+                catch (ElementClickInterceptedException)
+                {
+                    return false;
+                }
+            });
         }
 
         public void WaitTextCondition(string selector, Func<string, bool> condition, int? milliseconds = null)
@@ -274,6 +289,21 @@ namespace SeleniumWrapper4000
             });
         }
 
+        public void WaitUntilElementIsEnabled(string selector, int? milliseconds = null)
+        {
+            if (!milliseconds.HasValue)
+                milliseconds = currentTimeoutInMilliseconds;
+
+            var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(milliseconds.Value));
+
+            wait.Until(drv =>
+            {
+                var element = driver.FindElementByCssSelector(selector);
+                return element != null
+                    && element.Enabled;
+            });
+        }
+
         public void MaximizeWindow() => driver.Manage().Window.Maximize();
 
         public void MinimizeWindow() => driver.Manage().Window.Minimize();
@@ -304,8 +334,6 @@ namespace SeleniumWrapper4000
             currentTimeoutInMilliseconds = milliseconds;
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(currentTimeoutInMilliseconds);
         }
-
-        public void Close() => driver.Quit();
 
         public void Dispose() => driver.Quit();
 
