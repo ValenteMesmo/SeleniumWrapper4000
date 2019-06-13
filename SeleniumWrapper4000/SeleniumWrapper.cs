@@ -194,6 +194,11 @@ namespace SeleniumWrapper4000
             return element.Text;
         }
 
+        public void ConsoleWriteError(string text)
+        {
+            ExecuteScript("console.error(arguments[0]);", text);
+        }
+
         private IWebElement GetCell(string selector, int rowIndex, int columnIndex, int? milliseconds = null)
         {
             if (!milliseconds.HasValue)
