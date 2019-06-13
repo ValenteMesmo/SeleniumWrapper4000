@@ -1,10 +1,12 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace SeleniumWrapper4000
 {
@@ -74,36 +76,81 @@ namespace SeleniumWrapper4000
 
         public void GoToUrl(string url)
         {
-            if (driver.Url != url)
-                driver.Navigate().GoToUrl(url);
+            driver.Navigate().GoToUrl(url);
         }
 
-        public void Refresh() => driver.Navigate().Refresh();
-
-        public void Click(string selector)
+        public void Refresh(bool deleteCookies = false)
         {
-            var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(currentTimeoutInMilliseconds));
+            if (deleteCookies)
+                driver.Manage().Cookies.DeleteAllCookies();
+            driver.Navigate().Refresh();
+        }
+
+        public void SendText(string text)
+        {
+            new Actions(driver).SendKeys(text).Perform();
+        }
+
+        public void PressEnter()
+        {
+            new Actions(driver).SendKeys(Keys.Enter).Perform();
+        }
+
+        public void PressTab()
+        {
+            new Actions(driver).SendKeys(Keys.Tab).Perform();
+        }
+
+        public void Click(string selector, int? milliseconds = null)
+        {
+            if (!milliseconds.HasValue)
+                milliseconds = currentTimeoutInMilliseconds;
+
+            var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(milliseconds.Value));
             IWebElement element = null;
             wait.Until(drv =>
             {
                 element = driver.FindElementByCssSelector(selector);
-                return element != null
-                    && element.Displayed
-                    && element.Enabled;
-            });
 
-            wait.Until(drv =>
-            {
+                if (element == null || !element.Displayed || !element.Enabled)
+                    return null;
+
                 try
                 {
                     element.Click();
-                    return true;
                 }
                 catch (ElementClickInterceptedException)
                 {
-                    return false;
+                    //driver.ExecuteScript("arguments[0].click();", element);
+                    return null;
                 }
+
+                return element;
             });
+        }
+
+        public string GetQueryStringValue(string key)
+        {
+            var myUri = new Uri(driver.Url);
+            var queryStrings = DecodeQueryParameters(myUri);
+            if (queryStrings.ContainsKey(key))
+                return queryStrings[key];
+
+            return string.Empty;
+        }
+
+        private Dictionary<string, string> DecodeQueryParameters(Uri uri)
+        {
+            if (uri == null || uri.Query.Length == 0)
+                return new Dictionary<string, string>();
+
+            return uri.Query.TrimStart('?')
+                            .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
+                            .GroupBy(parts => parts[0],
+                                     parts => parts.Length > 2 ? string.Join("=", parts, 1, parts.Length - 1) : (parts.Length > 1 ? parts[1] : ""))
+                            .ToDictionary(grouping => grouping.Key,
+                                          grouping => string.Join(",", grouping));
         }
 
         public void WaitTextCondition(string selector, Func<string, bool> condition, int? milliseconds = null)
@@ -122,12 +169,14 @@ namespace SeleniumWrapper4000
                 }
                 catch { }
                 if (element == null)
-                    return false;
+                    return null;
                 if (!element.Displayed)
-                    return false;
+                    return null;
                 if (element.Text == null)
-                    return false;
-                return condition(element.Text);
+                    return null;
+                if (condition(element.Text))
+                    return element;
+                return null;
             });
         }
 
@@ -164,7 +213,7 @@ namespace SeleniumWrapper4000
 
                 }
                 catch { }
-                return cell != null;
+                return cell;
             });
 
             return cell;
@@ -200,8 +249,10 @@ namespace SeleniumWrapper4000
                 var cell = GetCell(tableSelector, rowIndex, columnIndex, milliseconds);
                 var element = cell.FindElement(By.CssSelector(inCellSelector));
 
-                return element != null
-                   && element.Displayed;
+                if (element == null || !element.Displayed)
+                    return null;
+
+                return element;
             });
         }
 
@@ -269,8 +320,10 @@ namespace SeleniumWrapper4000
             wait.Until(drv =>
             {
                 var element = driver.FindElementByCssSelector(selector);
-                return element == null
-                    || !element.Displayed;
+                if (element != null && element.Displayed)
+                    return null;
+
+                return new { };
             });
         }
 
@@ -284,8 +337,11 @@ namespace SeleniumWrapper4000
             wait.Until(drv =>
             {
                 var element = driver.FindElementByCssSelector(selector);
-                return element != null
-                    && element.Displayed;
+
+                if (element == null || !element.Displayed)
+                    return null;
+
+                return element;
             });
         }
 
@@ -299,8 +355,11 @@ namespace SeleniumWrapper4000
             wait.Until(drv =>
             {
                 var element = driver.FindElementByCssSelector(selector);
-                return element != null
-                    && element.Enabled;
+
+                if (element == null || !element.Enabled)
+                    return null;
+
+                return element;
             });
         }
 
