@@ -153,6 +153,21 @@ namespace SeleniumWrapper4000
                                           grouping => string.Join(",", grouping));
         }
 
+        public void Wait(Func<bool> condition, int? milliseconds = null) {
+            if (!milliseconds.HasValue)
+                milliseconds = currentTimeoutInMilliseconds;
+
+            var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(milliseconds.Value));
+
+            wait.Until(drv =>
+            {
+                if (condition())
+                    return new { };
+
+                return null;
+            });
+        }
+
         public void WaitTextCondition(string selector, Func<string, bool> condition, int? milliseconds = null)
         {
             if (!milliseconds.HasValue)
