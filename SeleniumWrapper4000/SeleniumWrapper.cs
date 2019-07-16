@@ -1,6 +1,8 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
@@ -10,16 +12,32 @@ using System.Linq;
 
 namespace SeleniumWrapper4000
 {
-    //TODO: doc
-    //TODO: wait generic
+    public enum BrowserType
+    {
+        Chrome,
+        InternetExplorer
+    }
+
     public class SeleniumWrapper : IDisposable
     {
-        private ChromeDriver driver;
+        private RemoteWebDriver driver;
+
         private int currentTimeoutInMilliseconds;
 
-        public SeleniumWrapper(bool headless = false, int implicityWait = 1000)
+        public SeleniumWrapper(bool headless = false, int implicityWait = 1000, BrowserType BrowserType = BrowserType.Chrome)
         {
             currentTimeoutInMilliseconds = implicityWait;
+
+            if (BrowserType == BrowserType.Chrome)
+                driver = CreateChromeDriver(headless);
+            else
+                driver = new InternetExplorerDriver();
+
+            SetImplicityWait(currentTimeoutInMilliseconds);
+        }
+
+        private static ChromeDriver CreateChromeDriver(bool headless)
+        {
             var cService = ChromeDriverService.CreateDefaultService();
             cService.HideCommandPromptWindow = true;
             cService.SuppressInitialDiagnosticInformation = true;
@@ -69,9 +87,7 @@ namespace SeleniumWrapper4000
             foreach (var id in driverProcessIds)
                 Process.GetProcessById(id)
                     .AttachToCurrentProcess();
-
-            driver = webdriver;
-            SetImplicityWait(currentTimeoutInMilliseconds);
+            return webdriver;
         }
 
         public void GoToUrl(string url)
@@ -153,7 +169,8 @@ namespace SeleniumWrapper4000
                                           grouping => string.Join(",", grouping));
         }
 
-        public void Wait(Func<bool> condition, int? milliseconds = null) {
+        public void Wait(Func<bool> condition, int? milliseconds = null)
+        {
             if (!milliseconds.HasValue)
                 milliseconds = currentTimeoutInMilliseconds;
 
