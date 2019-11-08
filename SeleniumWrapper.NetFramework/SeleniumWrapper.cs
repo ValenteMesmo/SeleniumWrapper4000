@@ -9,9 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
-namespace SeleniumWrapper4000
+namespace ValenteMesmo.SeleniumWrapper
 {
     public enum BrowserType
     {

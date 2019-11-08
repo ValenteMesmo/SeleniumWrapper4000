@@ -1,17 +1,19 @@
-﻿namespace ConsoleTest
+﻿using ValenteMesmo.SeleniumWrapper;
+
+namespace ConsoleTest
 {
     class Program
     {
         static void Main(string[] args)
         {
-            using (var sut = new SeleniumWrapper4000.SeleniumWrapper(
+            using (var sut = new SeleniumWrapper(
                 false
                 , 100000
-                , SeleniumWrapper4000.BrowserType.InternetExplorer))
+                , BrowserType.InternetExplorer))
             {
                 sut.GoToUrl("http://google.com");
 
-                int x = 5;
+                int x = 50;
                 sut.Wait(() => x-- == 0);
             }
         }

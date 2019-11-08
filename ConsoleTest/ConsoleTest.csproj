@@ -52,9 +52,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SeleniumWrapper4000\SeleniumWrapper4000.csproj">
-      <Project>{2ffc34c7-c2b9-4281-8c90-da2a2e7c29c4}</Project>
-      <Name>SeleniumWrapper4000</Name>
+    <ProjectReference Include="..\SeleniumWrapper.NetFramework\SeleniumWrapper.NetFramework.csproj">
+      <Project>{2FFC34C7-C2B9-4281-8C90-DA2A2E7C29C4}</Project>
+      <Name>SeleniumWrapper.NetFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

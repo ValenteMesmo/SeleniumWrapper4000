@@ -20,7 +20,7 @@ else
 
     let mutable parentIsRunning = true
     while parentIsRunning do
-        System.Threading.Thread.Sleep(100)
+        System.Threading.Thread.Sleep(500)
         let parentProcess = getProcess parentProcess
 
         if parentProcess.IsNone then

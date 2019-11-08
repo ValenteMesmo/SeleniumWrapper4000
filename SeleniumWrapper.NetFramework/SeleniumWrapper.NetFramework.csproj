@@ -8,8 +8,8 @@
     <ProjectGuid>{2FFC34C7-C2B9-4281-8C90-DA2A2E7C29C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SeleniumWrapper4000</RootNamespace>
-    <AssemblyName>SeleniumWrapper4000</AssemblyName>
+    <RootNamespace>ValenteMesmo.SeleniumWrapper</RootNamespace>
+    <AssemblyName>ValenteMesmo.SeleniumWrapper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
