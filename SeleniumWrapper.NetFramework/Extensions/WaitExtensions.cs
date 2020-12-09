@@ -1,11 +1,20 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Threading.Tasks;
 
 namespace ValenteMesmo.SeleniumWrapper
 {
     public static class WaitExtensions
     {
+        public static void Wait(this SeleniumWrapper wrapper, int? milliseconds = null)
+        {
+            if (!milliseconds.HasValue)
+                milliseconds = wrapper.currentTimeoutInMilliseconds;
+
+            Task.Delay(milliseconds.Value).Wait();
+        }
+
         public static void Wait(this SeleniumWrapper wrapper, Func<bool> condition, int? milliseconds = null)
         {
             if (!milliseconds.HasValue)
@@ -18,6 +27,22 @@ namespace ValenteMesmo.SeleniumWrapper
                 if (condition())
                     return new { };
 
+                return null;
+            });
+        }
+
+        public static void WaitUrlChange(this SeleniumWrapper wrapper, int? milliseconds = null)
+        {
+            var previousUrl = wrapper.driver.Url;
+            if (!milliseconds.HasValue)
+                milliseconds = wrapper.currentTimeoutInMilliseconds;
+
+            var wait = new WebDriverWait(wrapper.driver, TimeSpan.FromMilliseconds(milliseconds.Value));
+
+            wait.Until(drv =>
+            {
+                if (previousUrl != wrapper.driver.Url)
+                    return wrapper.driver.Url;
                 return null;
             });
         }
@@ -75,7 +100,7 @@ namespace ValenteMesmo.SeleniumWrapper
             });
         }
 
-        public static void WaitInvisibilityOf(this SeleniumWrapper wrapper,  string selector, int? milliseconds = null)
+        public static void WaitInvisibilityOf(this SeleniumWrapper wrapper, string selector, int? milliseconds = null)
         {
             if (!milliseconds.HasValue)
                 milliseconds = wrapper.currentTimeoutInMilliseconds;
@@ -92,7 +117,7 @@ namespace ValenteMesmo.SeleniumWrapper
             });
         }
 
-        public static void WaitVisibilityOf(this SeleniumWrapper wrapper,string selector, int? milliseconds = null)
+        public static void WaitVisibilityOf(this SeleniumWrapper wrapper, string selector, int? milliseconds = null)
         {
             if (!milliseconds.HasValue)
                 milliseconds = wrapper.currentTimeoutInMilliseconds;
@@ -110,7 +135,7 @@ namespace ValenteMesmo.SeleniumWrapper
             });
         }
 
-        public static void WaitUntilElementIsEnabled(this SeleniumWrapper wrapper,string selector, int? milliseconds = null)
+        public static void WaitUntilElementIsEnabled(this SeleniumWrapper wrapper, string selector, int? milliseconds = null)
         {
             if (!milliseconds.HasValue)
                 milliseconds = wrapper.currentTimeoutInMilliseconds;

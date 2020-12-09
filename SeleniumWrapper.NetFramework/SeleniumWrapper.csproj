@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>ValenteMesmo</Authors>
     <Company></Company>
     <PackageId>ValenteMesmo.SeleniumWrapper</PackageId>
@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="chromedriver.exe">
+    <Content Include="$(MSBuildThisFileDirectory)chromedriver.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="KillWithParent.fsx">
+    <Content Include="$(MSBuildThisFileDirectory)KillWithParent.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

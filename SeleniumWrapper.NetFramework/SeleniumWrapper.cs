@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 
 namespace ValenteMesmo.SeleniumWrapper
 {
+    //todo: get current url
+    //wait url change
     public class SeleniumWrapper : IDisposable
     {
         internal readonly RemoteWebDriver driver;
