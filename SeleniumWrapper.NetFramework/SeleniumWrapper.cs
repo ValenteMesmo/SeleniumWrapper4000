@@ -85,7 +85,7 @@ namespace ValenteMesmo.SeleniumWrapper
                 if (match.Success && match.Groups.Count == 2)
                     throw new InvalidOperationException(
                         $@"The webdriver version does not match browser version...
-Google 'download chrome webdriver' and download version {match.Groups[1]}..."
+Download version {match.Groups[1]} of chrome webdriver at http://chromedriver.storage.googleapis.com/index.html"
 
                         , exception);
 
