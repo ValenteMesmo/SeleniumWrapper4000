@@ -21,6 +21,30 @@ namespace ValenteMesmo.SeleniumWrapper
                 .SendKeys(Keys.Enter)
                 .Perform();
         }
+        public static void PressLeft(this SeleniumWrapper wrapper)
+        {
+            new Actions(wrapper.driver)
+                .SendKeys(Keys.Left)
+                .Perform();
+        }
+        public static void PressRight(this SeleniumWrapper wrapper)
+        {
+            new Actions(wrapper.driver)
+                .SendKeys(Keys.Right)
+                .Perform();
+        }
+        public static void PressUp(this SeleniumWrapper wrapper)
+        {
+            new Actions(wrapper.driver)
+                .SendKeys(Keys.Up)
+                .Perform();
+        }
+        public static void PressDown(this SeleniumWrapper wrapper)
+        {
+            new Actions(wrapper.driver)
+                .SendKeys(Keys.Down)
+                .Perform();
+        }
 
         public static void PressDelete(this SeleniumWrapper wrapper)
         {
