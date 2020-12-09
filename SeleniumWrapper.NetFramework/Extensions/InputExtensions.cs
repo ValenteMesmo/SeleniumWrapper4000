@@ -22,6 +22,13 @@ namespace ValenteMesmo.SeleniumWrapper
                 .Perform();
         }
 
+        public static void PressDelete(this SeleniumWrapper wrapper)
+        {
+            new Actions(wrapper.driver)
+                .SendKeys(Keys.Delete)
+                .Perform();
+        }
+
         public static void PressEnter(this SeleniumWrapper wrapper, string selector)
         {
             wrapper.driver
