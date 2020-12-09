@@ -1,4 +1,5 @@
-﻿using ValenteMesmo.SeleniumWrapper;
+﻿using System;
+using ValenteMesmo.SeleniumWrapper;
 
 namespace ConsoleTest
 {
@@ -6,15 +7,9 @@ namespace ConsoleTest
     {
         static void Main(string[] args)
         {
-            using (var sut = new SeleniumWrapper(
-                false
-                , 100000
-                , BrowserType.InternetExplorer))
+            using (var driver = new SeleniumWrapper(false, 2000))
             {
-                sut.GoToUrl("http://google.com");
-
-                int x = 50;
-                sut.Wait(() => x-- == 0);
+                driver.GoToUrl("https://www.youtube.com/watch?v=hD1qJ8Gbons");
             }
         }
     }
