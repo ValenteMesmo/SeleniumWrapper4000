@@ -50,9 +50,11 @@ namespace ValenteMesmo.SeleniumWrapper
 
         private static RemoteWebDriver CreateChromeDriver(bool headless)
         {
-            var cService = ChromeDriverService.CreateDefaultService();
+            var cService = ChromeDriverService.CreateDefaultService(
+                Path.Combine(Environment.CurrentDirectory,"content"));
+
             cService.HideCommandPromptWindow = true;
-            cService.SuppressInitialDiagnosticInformation = true;
+            cService.SuppressInitialDiagnosticInformation = true;            
 
             var options = new ChromeOptions();
             if (headless)
