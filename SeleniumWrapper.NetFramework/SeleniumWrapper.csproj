@@ -6,19 +6,16 @@
         <Authors>ValenteMesmo</Authors>
         <Company></Company>
         <PackageId>ValenteMesmo.SeleniumWrapper</PackageId>
-        <RepositoryUrl>https://github.com/ValenteMesmo/ValenteMesmo.SeleniumWrapper</RepositoryUrl>        
+        <RepositoryUrl>https://github.com/ValenteMesmo/ValenteMesmo.SeleniumWrapper</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="$(MSBuildThisFileDirectory)\content\chromedriver.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="$(MSBuildThisFileDirectory)\tools\Init.ps1">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>      
-      <Content Include="$(MSBuildThisFileDirectory)\content\KillWithParent.fsx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+        <Content Include="$(MSBuildThisFileDirectory)\build\chromedriver.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="$(MSBuildThisFileDirectory)\build\KillWithParent.fsx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -27,5 +24,5 @@
         <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
         <PackageReference Include="System.Management" Version="5.0.0" />
     </ItemGroup>
-    
+
 </Project>
