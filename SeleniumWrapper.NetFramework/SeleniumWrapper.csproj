@@ -15,10 +15,7 @@
         </Content>
         <Content Include="$(MSBuildThisFileDirectory)\build\KillWithParent.fsx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(MSBuildThisFileDirectory)\build\ValenteMesmo.SeleniumWrapper.targets">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        </Content>       
     </ItemGroup>
 
     <ItemGroup>
