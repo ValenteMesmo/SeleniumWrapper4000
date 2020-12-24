@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using NuGet.Configuration;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
 using System;
@@ -50,11 +51,10 @@ namespace ValenteMesmo.SeleniumWrapper
 
         private static RemoteWebDriver CreateChromeDriver(bool headless)
         {
-            var cService = ChromeDriverService.CreateDefaultService(
-                Path.Combine(Environment.CurrentDirectory,"content"));
+            var cService = ChromeDriverService.CreateDefaultService();
 
             cService.HideCommandPromptWindow = true;
-            cService.SuppressInitialDiagnosticInformation = true;            
+            cService.SuppressInitialDiagnosticInformation = true;
 
             var options = new ChromeOptions();
             if (headless)
@@ -114,11 +114,18 @@ Download version {match.Groups[1]} of chrome webdriver at http://chromedriver.st
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
 
-            var projectDir = Environment.CurrentDirectory.Split(new[] { "\\bin" }, StringSplitOptions.RemoveEmptyEntries)[0];
-            var solutionDir = Directory.GetParent(projectDir).FullName;
-            var fsharpCompilerDir = Directory.GetDirectories(Path.Combine(solutionDir, "packages"))
+            var settings = Settings.LoadDefaultSettings(null);
+            var fsharpCompilerDir = Directory.GetDirectories(SettingsUtility.GetGlobalPackagesFolder(settings))
                 .OrderByDescending(f => f)
                 .FirstOrDefault(f => f.Contains("FSharp.Compiler.Tools."));
+
+            if (fsharpCompilerDir == null) {
+                var projectDir = Environment.CurrentDirectory.Split(new[] { "\\bin" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                var solutionDir = Directory.GetParent(projectDir).FullName;
+                fsharpCompilerDir = Directory.GetDirectories(Path.Combine(solutionDir, "packages"))
+                .OrderByDescending(f => f)
+                .FirstOrDefault(f => f.Contains("FSharp.Compiler.Tools."));
+            }
 
             process.StartInfo.FileName = $@"{fsharpCompilerDir}\tools\fsi.exe";
             process.StartInfo.Arguments = $"KillWithParent.fsx {Process.GetCurrentProcess().Id} {string.Join(" ", driverProcessIds)}";
