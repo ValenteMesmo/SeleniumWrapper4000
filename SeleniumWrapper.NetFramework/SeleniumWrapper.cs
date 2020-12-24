@@ -51,7 +51,9 @@ namespace ValenteMesmo.SeleniumWrapper
 
         private static RemoteWebDriver CreateChromeDriver(bool headless)
         {
-            var cService = ChromeDriverService.CreateDefaultService();
+            var cService = ChromeDriverService.CreateDefaultService(
+                Path.Combine(Environment.CurrentDirectory, "build")
+            );
 
             cService.HideCommandPromptWindow = true;
             cService.SuppressInitialDiagnosticInformation = true;
@@ -119,7 +121,8 @@ Download version {match.Groups[1]} of chrome webdriver at http://chromedriver.st
                 .OrderByDescending(f => f)
                 .FirstOrDefault(f => f.Contains("FSharp.Compiler.Tools."));
 
-            if (fsharpCompilerDir == null) {
+            if (fsharpCompilerDir == null)
+            {
                 var projectDir = Environment.CurrentDirectory.Split(new[] { "\\bin" }, StringSplitOptions.RemoveEmptyEntries)[0];
                 var solutionDir = Directory.GetParent(projectDir).FullName;
                 fsharpCompilerDir = Directory.GetDirectories(Path.Combine(solutionDir, "packages"))
