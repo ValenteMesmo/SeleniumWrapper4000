@@ -51,9 +51,7 @@ namespace ValenteMesmo.SeleniumWrapper
 
         private static RemoteWebDriver CreateChromeDriver(bool headless)
         {
-            var cService = ChromeDriverService.CreateDefaultService(
-                Path.Combine(Environment.CurrentDirectory, "build")
-            );
+            var cService = ChromeDriverService.CreateDefaultService(Environment.CurrentDirectory);
 
             cService.HideCommandPromptWindow = true;
             cService.SuppressInitialDiagnosticInformation = true;
@@ -119,19 +117,22 @@ Download version {match.Groups[1]} of chrome webdriver at http://chromedriver.st
             var settings = Settings.LoadDefaultSettings(null);
             var fsharpCompilerDir = Directory.GetDirectories(SettingsUtility.GetGlobalPackagesFolder(settings))
                 .OrderByDescending(f => f)
-                .FirstOrDefault(f => f.Contains("FSharp.Compiler.Tools."));
+                .FirstOrDefault(f => f.ToLower().Contains("fsharp.compiler.tools"));
 
+            //todo remove
             if (fsharpCompilerDir == null)
             {
                 var projectDir = Environment.CurrentDirectory.Split(new[] { "\\bin" }, StringSplitOptions.RemoveEmptyEntries)[0];
                 var solutionDir = Directory.GetParent(projectDir).FullName;
                 fsharpCompilerDir = Directory.GetDirectories(Path.Combine(solutionDir, "packages"))
                 .OrderByDescending(f => f)
-                .FirstOrDefault(f => f.Contains("FSharp.Compiler.Tools."));
+                .FirstOrDefault(f => f.ToLower().Contains("fsharp.compiler.tools"));
             }
+            var fsiPath = Directory.GetFiles(fsharpCompilerDir, "fsi.exe", SearchOption.AllDirectories).OrderByDescending(f=>f).FirstOrDefault();
 
-            process.StartInfo.FileName = $@"{fsharpCompilerDir}\tools\fsi.exe";
-            process.StartInfo.Arguments = $"KillWithParent.fsx {Process.GetCurrentProcess().Id} {string.Join(" ", driverProcessIds)}";
+            process.StartInfo.FileName = fsiPath;
+            process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
+            process.StartInfo.Arguments = $@"KillWithParent.fsx {Process.GetCurrentProcess().Id} {string.Join(" ", driverProcessIds)}";
             process.Start();
         }
 
